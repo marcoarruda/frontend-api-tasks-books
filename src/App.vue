@@ -1,23 +1,20 @@
 <script setup lang="ts">
+import NavBar from './components/NavBar.vue';
+import { useAuthStore } from './stores/auth';
+
+const authStore = useAuthStore();
+
 </script>
 
 <template>
-  <div>
-    <RouterView />
+  <NavBar v-if="authStore.isLogged" />
+  <div class="mt-10">
+    <RouterView v-slot="{ Component }">
+      <transition enter-active-class="duration-300 ease-out" enter-from-class="transform opacity-0"
+        enter-to-class="opacity-100" leave-active-class="duration-300 ease-in" leave-from-class="opacity-100"
+        leave-to-class="transform opacity-0">
+        <Component :is="Component" :key="$route.fullPath" />
+      </transition>
+    </RouterView>
   </div>
 </template>
-
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>

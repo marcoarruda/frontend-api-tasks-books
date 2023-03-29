@@ -15,7 +15,7 @@ export async function useLogin(
     throw new Error(error.msg);
   }
 
-  const data = await response.json();
-  console.log(data)
-  return data.token;
+  const { token } = await response.json();
+
+  return token;
 }

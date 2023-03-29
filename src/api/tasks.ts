@@ -21,6 +21,6 @@ export async function getTasks(): Promise<Task[]> {
 
   const data = await response.json();
   const tasks: Task[] = data.tasks || [];
-  console.log(tasks)
+
   return tasks
 }
