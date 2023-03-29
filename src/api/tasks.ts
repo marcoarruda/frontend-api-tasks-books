@@ -1,6 +1,8 @@
 import { API_ADDRESS } from ".";
 
 import { useAuthStore } from "../stores/auth";
+import { ApiResponse } from "../types/api";
+import { TaskCreateForm } from "../types/forms";
 import { Task } from "../types/models";
 
 export async function getTasks(): Promise<Task[]> {
@@ -23,4 +25,34 @@ export async function getTasks(): Promise<Task[]> {
   const tasks: Task[] = data.tasks || [];
 
   return tasks
+}
+
+export async function createTask(titulo: string): Promise<ApiResponse<Task, TaskCreateForm>> {
+  let success = true
+  let data = null
+  let error = null
+
+  const store = useAuthStore()
+
+  const response = await fetch(`${API_ADDRESS}/tasks`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${store.getToken}`
+    },
+    body: JSON.stringify({ titulo }),
+  });
+
+
+  if (!response.ok) {
+    success = false
+  }
+
+  try {
+    data = await response.json()
+  } catch (error: unknown) {
+    throw new Error(error instanceof Error ? error.message : 'Unknown error');
+  }
+
+  return { success, data, error }
 }

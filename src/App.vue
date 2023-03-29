@@ -7,7 +7,10 @@ const authStore = useAuthStore();
 </script>
 
 <template>
+  <!-- navbar -->
   <NavBar v-if="authStore.isLogged" />
+
+  <!-- current page -->
   <div class="mt-10">
     <RouterView v-slot="{ Component }">
       <transition enter-active-class="duration-300 ease-out" enter-from-class="transform opacity-0"
