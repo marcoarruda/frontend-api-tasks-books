@@ -38,6 +38,7 @@ async function submitForm() {
     authStore.setToken(token) // save token in Pinia store
     router.push('/dashboard') // navigate to dashboard on successful login
   } catch (error) {
+    console.log(error)
     // @ts-ignore
     errorMessage.value = error.message
   }

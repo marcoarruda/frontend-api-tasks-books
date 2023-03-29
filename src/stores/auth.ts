@@ -8,5 +8,10 @@ export const useAuthStore = defineStore('auth', {
     setToken(token: string) {
       this.token = token
     }
-  }
+  },
+  getters: {
+    getToken(): string {
+      return this.token
+    },
+  },
 })
