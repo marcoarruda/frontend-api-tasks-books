@@ -3,3 +3,7 @@ export type ApiResponse<T, U> = {
   data: T | null,
   error: U | null,
 }
+
+export type ApiGenericError = {
+  msg: string,
+}

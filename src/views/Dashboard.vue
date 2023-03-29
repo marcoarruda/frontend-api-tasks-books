@@ -16,15 +16,13 @@
             <input
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="username" type="text" placeholder="Username" v-model="titulo">
-            <div v-if="formError.titulo" class="text-sm text-red-500">{{ formError.titulo }}</div>  
+            <div v-if="formError.titulo" class="text-sm text-red-500">{{ formError.titulo }}</div>
           </div>
           <div v-if="createErrorMessage" class="text-red-500">{{ createErrorMessage }}</div>
           <div class="flex items-center justify-between">
             <button
               class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="button"
-              @click="onSubmit"
-            >
+              type="button" @click="onSubmit">
               Create task
             </button>
           </div>
@@ -37,9 +35,9 @@
           <h3 class="text-lg font-bold">{{ task.titulo }}</h3>
           <p>{{ task.titulo }}</p>
           <div class="flex justify-between items-center mt-4">
-            <span class="text-gray-500">{{ task.created_at }}</span>
+            <span class="text-gray-500">{{ formatDate(task.created_at) }}</span>
             <button class="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg"
-              @click="deleteTask(task._id)">Delete</button>
+              @click="onDelete(task._id)">Delete</button>
           </div>
         </div>
       </div>
@@ -55,7 +53,7 @@
 <script lang="ts" setup>
 import { onMounted, ref, reactive } from 'vue'
 import { Task } from '../types/models'
-import { getTasks, createTask } from '../api/tasks'
+import { getTasks, createTask, deleteTask } from '../api/tasks'
 import { TaskCreateForm } from '../types/forms';
 
 const tasks = ref<Task[]>([])
@@ -65,6 +63,21 @@ const formError = reactive<TaskCreateForm>({
   titulo: '',
 })
 const createErrorMessage = ref('')
+const deleteErrorMessage = ref('')
+
+const onDelete = async (id: string) => {
+  try {
+    const response = await deleteTask(id)
+    if (response.success) {
+      tasks.value = tasks.value.filter((task) => task._id !== id)
+    } else {
+      alert(response.data!.msg)
+      console.error('Error deleting task:', response)
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 const onSubmit = async () => {
   try {
@@ -91,20 +104,7 @@ const fetchTasks = async () => {
   }
 }
 
-const deleteTask = async (taskId: string) => {
-  // try {
-  //   const response = await fetch(`/api/tasks/${taskId}`, { method: 'DELETE' })
-  //   if (response.ok) {
-  //     tasks.value = tasks.value.filter((task) => task.id !== taskId)
-  //   } else {
-  //     console.error('Error deleting task:', response.status)
-  //   }
-  // } catch (error) {
-  //   console.error(error)
-  // }
-}
-
-const formatDate = (dateString: string) => {
+const formatDate = (dateString: Date) => {
   const date = new Date(dateString)
   return date.toLocaleString()
 }
