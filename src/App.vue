@@ -1,8 +1,16 @@
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import NavBar from './components/NavBar.vue';
+import router from './router';
 import { useAuthStore } from './stores/auth';
 
 const authStore = useAuthStore();
+
+onMounted(() => {
+  if(authStore.checkAuth()) {
+    router.push('/dashboard')
+  }
+})
 
 </script>
 
