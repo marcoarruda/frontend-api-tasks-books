@@ -7,6 +7,7 @@ module.exports = {
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "@storybook/addon-interactions",
+    // 'storybook-addon-module-mock',
     {
       name: '@storybook/addon-styling',
       options: {
@@ -21,6 +22,7 @@ module.exports = {
     "builder": "@storybook/builder-vite"
   },
   "features": {
-    "storyStoreV7": true
+    "storyStoreV7": true,
+    "interactionsDebbuger": true
   }
 }

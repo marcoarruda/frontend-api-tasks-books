@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, defineEmits } from 'vue'
-import { createTask } from '../../api/tasks';
+import apiTasks from '../../api/tasks';
 import { TaskCreateForm } from '../../types/forms';
 import { Task } from '../../types/models';
 
@@ -20,7 +20,7 @@ const onSubmit = async () => {
   try {
     createErrorMessage.value = ''
     formError.titulo = ''
-    const response = await createTask(form)
+    const response = await apiTasks.createTask(form)
 
     if (response.success) {
       emits('onCreate', response.data as Task)
@@ -45,16 +45,16 @@ const onSubmit = async () => {
         <label for="titulo" class="block text-gray-700 text-sm-font-bold mb-2">Titulo</label>
         <input
           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="username" type="text" placeholder="Username" v-model="form.titulo">
+          id="titulo" data-testid="titulo" type="text" placeholder="Titulo" v-model="form.titulo">
         <div v-if="formError.titulo" class="text-sm text-red-500">{{ formError.titulo }}</div>
       </div>
-      <div v-if="createErrorMessage" class="text-red-500">{{ createErrorMessage }}</div>
-      <div class="flex items-center justify-between">
+      <div class="flex items-center justify-start">
         <button
           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           type="button" @click="onSubmit">
           Create task
         </button>
+        <div v-if="createErrorMessage" class="text-red-500 ml-2">{{ createErrorMessage }}</div>
       </div>
     </form>
   </div>
