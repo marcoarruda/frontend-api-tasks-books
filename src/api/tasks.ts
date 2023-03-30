@@ -27,7 +27,7 @@ export async function getTasks(): Promise<Task[]> {
   return tasks
 }
 
-export async function createTask(titulo: string): Promise<ApiResponse<Task, TaskCreateForm>> {
+export async function createTask(form: TaskCreateForm): Promise<ApiResponse<Task, TaskCreateForm>> {
   let success = true
   let data = null
   let error = null
@@ -40,7 +40,7 @@ export async function createTask(titulo: string): Promise<ApiResponse<Task, Task
       "Content-Type": "application/json",
       "Authorization": `Bearer ${store.getToken}`
     },
-    body: JSON.stringify({ titulo }),
+    body: JSON.stringify(form),
   });
 
 

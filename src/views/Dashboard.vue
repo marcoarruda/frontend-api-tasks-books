@@ -8,26 +8,7 @@
     </div>
     <template v-else>
       <!-- Create task form -->
-      <div>
-        <h3 class="text-lg font-normal">Create a task</h3>
-        <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" @submit.prevent="onSubmit">
-          <div class="mb-4">
-            <label for="titulo" class="block text-gray-700 text-sm-font-bold mb-2">Titulo</label>
-            <input
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="username" type="text" placeholder="Username" v-model="titulo">
-            <div v-if="formError.titulo" class="text-sm text-red-500">{{ formError.titulo }}</div>
-          </div>
-          <div v-if="createErrorMessage" class="text-red-500">{{ createErrorMessage }}</div>
-          <div class="flex items-center justify-between">
-            <button
-              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="button" @click="onSubmit">
-              Create task
-            </button>
-          </div>
-        </form>
-      </div>
+      <CreateTaskForm @onCreate="onCreate" />
 
       <!-- Tasks -->
       <div class="space-y-4" v-if="tasks.length > 0">
@@ -51,19 +32,13 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, reactive } from 'vue'
+import { onMounted, ref } from 'vue'
 import { Task } from '../types/models'
-import { getTasks, createTask, deleteTask } from '../api/tasks'
-import { TaskCreateForm } from '../types/forms';
+import { getTasks, deleteTask } from '../api/tasks'
+import CreateTaskForm from '../components/Tasks/Create.vue';
 
 const tasks = ref<Task[]>([])
-const titulo = ref('')
 const errorMessage = ref('')
-const formError = reactive<TaskCreateForm>({
-  titulo: '',
-})
-const createErrorMessage = ref('')
-const deleteErrorMessage = ref('')
 
 const onDelete = async (id: string) => {
   try {
@@ -79,21 +54,8 @@ const onDelete = async (id: string) => {
   }
 }
 
-const onSubmit = async () => {
-  try {
-    createErrorMessage.value = ''
-    formError.titulo = ''
-    const response = await createTask(titulo.value)
-
-    if (response.success) {
-      tasks.value = [...tasks.value, response.data!]
-    } else {
-      formError.titulo = response.data?.titulo ?? ''
-    }
-  } catch (error: unknown) {
-    console.log(error)
-    createErrorMessage.value = error instanceof Error ? error.message : 'Unknown error'
-  }
+const onCreate = (task: Task) => {
+  tasks.value = [task, ...tasks.value]
 }
 
 const fetchTasks = async () => {
