@@ -4,11 +4,12 @@ import { useAuthStore } from "../stores/auth";
 import { ApiGenericError, ApiResponse } from "../types/api";
 import { TaskCreateForm } from "../types/forms";
 import { Task } from "../types/models";
+import { Paginator } from "../types/utils";
 
-export async function getTasks(): Promise<Task[]> {
+export async function getTasks(page: number, limit: number): Promise<Paginator<Task>> {
   const store = useAuthStore()
 
-  const response = await fetch(`${API_ADDRESS}/tasks`, {
+  const response = await fetch(`${API_ADDRESS}/tasks?page=${page}&limit=${limit}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -21,10 +22,9 @@ export async function getTasks(): Promise<Task[]> {
     throw new Error(error.msg);
   }
 
-  const data = await response.json();
-  const tasks: Task[] = data.tasks || [];
+  const paginator = await response.json();
 
-  return tasks
+  return paginator
 }
 
 export async function createTask(form: TaskCreateForm): Promise<ApiResponse<Task, TaskCreateForm>> {

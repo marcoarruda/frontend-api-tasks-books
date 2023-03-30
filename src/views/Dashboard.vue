@@ -12,6 +12,11 @@
 
       <!-- Tasks -->
       <div class="space-y-4" v-if="tasks.length > 0">
+        <div>
+          <p>Page: {{ `${currentPage}/${paginator.totalPages ?? 1}` }} - Showing {{ countTasks }} out of {{ paginator.total }}</p>
+          <button @click="onPrevPage" :disabled="!canPrev" :class="[ canPrev ? 'bg-blue-500 hover:bg-blue-700' : 'bg-gray-400' ]" class="mx-1 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">&lt;</button>
+          <button @click="onNextPage" :disabled="!canNext" :class="[ canNext ? 'bg-blue-500 hover:bg-blue-700' : 'bg-gray-400' ]" class="mx-1 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">&gt;</button>
+        </div>
         <div v-for="task in tasks" :key="task._id" class="bg-white rounded-lg shadow-md p-4">
           <h3 class="text-lg font-bold">{{ task.titulo }}</h3>
           <p>{{ task.titulo }}</p>
@@ -32,13 +37,39 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, reactive, computed, ref } from 'vue'
 import { Task } from '../types/models'
 import { getTasks, deleteTask } from '../api/tasks'
 import CreateTaskForm from '../components/Tasks/Create.vue';
 
 const tasks = ref<Task[]>([])
 const errorMessage = ref('')
+const paginator = reactive({
+  total: 0,
+  totalPages: 0,
+})
+
+const currentPage = ref(1)
+const tasksPerPage = 5
+
+const canPrev = computed(() => currentPage.value > 1)
+const canNext = computed(() => currentPage.value < paginator.totalPages)
+
+const onPrevPage = () => {
+  if (canPrev.value) {
+    currentPage.value--
+    fetchTasks()
+  }
+}
+
+const onNextPage = () => {
+  if (canNext.value) {
+    currentPage.value++
+    fetchTasks()
+  }
+}
+
+const countTasks = computed(() => tasks.value.length)
 
 const onDelete = async (id: string) => {
   try {
@@ -60,7 +91,10 @@ const onCreate = (task: Task) => {
 
 const fetchTasks = async () => {
   try {
-    tasks.value = await getTasks()
+    const response = await getTasks(currentPage.value, tasksPerPage)
+    tasks.value = response.tasks
+    paginator.total = response.totalTask
+    paginator.totalPages = response.totalPages
   } catch (error: unknown) {
     errorMessage.value = error instanceof Error ? error.message : 'Unknown error'
   }
