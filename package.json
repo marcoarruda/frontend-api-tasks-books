@@ -8,7 +8,8 @@
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "storybook": "start-storybook -p 6006",
+    "storybook:serve": "start-storybook -p 6006",
+    "storybook:test": "test-storybook",
     "build-storybook": "build-storybook"
   },
   "dependencies": {
@@ -25,6 +26,7 @@
     "@storybook/addon-styling": "^0.3.2",
     "@storybook/builder-vite": "^0.4.2",
     "@storybook/jest": "^0.0.10",
+    "@storybook/test-runner": "^0.9.4",
     "@storybook/testing-library": "^0.0.13",
     "@storybook/vue3": "^6.5.16",
     "@vitejs/plugin-vue": "^4.1.0",

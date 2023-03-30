@@ -7,7 +7,7 @@ module.exports = {
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "@storybook/addon-interactions",
-    // 'storybook-addon-module-mock',
+    'storybook-addon-module-mock',
     {
       name: '@storybook/addon-styling',
       options: {
