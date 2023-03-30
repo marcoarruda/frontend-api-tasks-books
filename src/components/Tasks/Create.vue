@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, defineEmits } from 'vue'
+import { ref, reactive } from 'vue'
 import apiTasks from '../../api/tasks';
 import { TaskCreateForm } from '../../types/forms';
 import { Task } from '../../types/models';
