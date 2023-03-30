@@ -39,7 +39,7 @@
 <script lang="ts" setup>
 import { onMounted, reactive, computed, ref } from 'vue'
 import { Task } from '../types/models'
-import { getTasks, deleteTask } from '../api/tasks'
+import apiTasks from '../api/tasks'
 import CreateTaskForm from '../components/Tasks/Create.vue';
 
 const tasks = ref<Task[]>([])
@@ -73,9 +73,15 @@ const countTasks = computed(() => tasks.value.length)
 
 const onDelete = async (id: string) => {
   try {
-    const response = await deleteTask(id)
+    const response = await apiTasks.deleteTask(id)
     if (response.success) {
       tasks.value = tasks.value.filter((task) => task._id !== id)
+
+      if (tasks.value.length === 0 && currentPage.value > 1) {
+        currentPage.value--
+      }
+
+      fetchTasks()
     } else {
       alert(response.data!.msg)
       console.error('Error deleting task:', response)
@@ -92,7 +98,7 @@ const onCreate = (task: Task) => {
 
 const fetchTasks = async () => {
   try {
-    const response = await getTasks(currentPage.value, tasksPerPage)
+    const response = await apiTasks.getTasks(currentPage.value, tasksPerPage)
     tasks.value = response.tasks
     paginator.total = response.totalTask
     paginator.totalPages = response.totalPages
