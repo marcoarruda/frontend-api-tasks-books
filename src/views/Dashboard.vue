@@ -13,7 +13,7 @@
       <!-- Tasks -->
       <div class="space-y-4" v-if="tasks.length > 0">
         <div>
-          <p>Page: {{ `${currentPage}/${paginator.totalPages ?? 1}` }} - Showing {{ countTasks }} out of {{ paginator.total }}</p>
+          <p>Total tasks: {{ paginator.total }} - Showing {{  countTasks }} tasks on page {{ `${currentPage}/${paginator.totalPages ?? 1}` }}</p>
           <button @click="onPrevPage" :disabled="!canPrev" :class="[ canPrev ? 'bg-blue-500 hover:bg-blue-700' : 'bg-gray-400' ]" class="mx-1 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">&lt;</button>
           <button @click="onNextPage" :disabled="!canNext" :class="[ canNext ? 'bg-blue-500 hover:bg-blue-700' : 'bg-gray-400' ]" class="mx-1 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">&gt;</button>
         </div>
@@ -86,7 +86,8 @@ const onDelete = async (id: string) => {
 }
 
 const onCreate = (task: Task) => {
-  tasks.value = [task, ...tasks.value]
+  currentPage.value = 1
+  fetchTasks()
 }
 
 const fetchTasks = async () => {

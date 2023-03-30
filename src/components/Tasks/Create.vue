@@ -24,8 +24,9 @@ const onSubmit = async () => {
 
     if (response.success) {
       emits('onCreate', response.data as Task)
+      form.titulo = ''
     } else {
-      if (response.error){
+      if (response.error) {
         createErrorMessage.value = response.error
       } else Object.assign(formError, response.data)
     }
