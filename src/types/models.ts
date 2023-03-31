@@ -3,5 +3,5 @@ export type Task = {
   user_id: string
   titulo: string
   created_at: Date
-  completed_at: Date
+  completed_at: Date | null
 }
