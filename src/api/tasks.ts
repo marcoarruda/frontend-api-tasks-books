@@ -86,4 +86,34 @@ export default {
 
     return { success, data, error }
   },
+
+  completeTask: async function (id: string): Promise<ApiResponse<Task, ApiGenericError>> {
+    let success = true
+    let data = null
+    let error = null
+
+    const store = useAuthStore()
+
+    const response = await fetch(`${API_ADDRESS}/tasks/${id}/completed`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${store.getToken}`
+      },
+    });
+
+
+    if (!response.ok) {
+      success = false
+    }
+
+    try {
+      data = await response.json()
+    } catch (error: unknown) {
+      throw new Error(error instanceof Error ? error.message : 'Unknown error');
+    }
+
+    return { success, data, error }
+  },
+
 }

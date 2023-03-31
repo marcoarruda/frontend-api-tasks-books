@@ -17,7 +17,7 @@
           <button @click="onPrevPage" :disabled="!canPrev" :class="[ canPrev ? 'bg-blue-500 hover:bg-blue-700' : 'bg-gray-400' ]" class="mx-1 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">&lt;</button>
           <button @click="onNextPage" :disabled="!canNext" :class="[ canNext ? 'bg-blue-500 hover:bg-blue-700' : 'bg-gray-400' ]" class="mx-1 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">&gt;</button>
         </div>
-        <TaskCard :task="task" v-for="task in tasks" :key="task._id" @onDelete="onDelete" />
+        <TaskCard :task="task" v-for="task in tasks" :key="task._id" @onDelete="onDelete" @onComplete="onComplete" />
       </div>
 
       <!-- no tasks -->
@@ -34,6 +34,7 @@ import { Task } from '../types/models'
 import apiTasks from '../api/tasks'
 import CreateTaskForm from '../components/Tasks/Create.vue';
 import TaskCard from '../components/Tasks/Card.vue';
+import { ApiGenericError } from '../types/api';
 
 const tasks = ref<Task[]>([])
 const errorMessage = ref('')
@@ -78,6 +79,25 @@ const onDelete = async (id: string) => {
     } else {
       alert(response.data!.msg)
       console.error('Error deleting task:', response)
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const onComplete = async (id: string) => {
+  try {
+    const response = await apiTasks.completeTask(id)
+    if (response.success) {
+      tasks.value = tasks.value.map((task) => {
+        if (task._id === id) {
+          return (response.data! as Task)
+        }
+        return task
+      })
+    } else {
+      alert((response.data! as ApiGenericError).msg)
+      console.error('Error completing task:', response)
     }
   } catch (error) {
     console.error(error)
