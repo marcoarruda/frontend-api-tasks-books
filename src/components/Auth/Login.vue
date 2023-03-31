@@ -24,9 +24,9 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { useAuthStore } from '../stores/auth'
-import { useLogin } from '../api/auth'
-import router from '../router'
+import { useAuthStore } from '../../stores/auth'
+import { useLogin } from '../../api/auth'
+import router from '../../router'
 const email = ref('')
 const password = ref('')
 const errorMessage = ref('')
