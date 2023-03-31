@@ -10,7 +10,7 @@
     "test": "vitest",
     "storybook:serve": "start-storybook -p 6006",
     "storybook:test": "test-storybook",
-    "build-storybook": "build-storybook"
+    "storybook:build": "build-storybook"
   },
   "dependencies": {
     "pinia": "^2.0.33",
@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.21.3",
+    "@faker-js/faker": "^7.6.0",
     "@storybook/addon-actions": "^6.5.16",
     "@storybook/addon-essentials": "^6.5.16",
     "@storybook/addon-interactions": "^6.5.16",
