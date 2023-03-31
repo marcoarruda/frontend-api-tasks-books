@@ -17,15 +17,7 @@
           <button @click="onPrevPage" :disabled="!canPrev" :class="[ canPrev ? 'bg-blue-500 hover:bg-blue-700' : 'bg-gray-400' ]" class="mx-1 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">&lt;</button>
           <button @click="onNextPage" :disabled="!canNext" :class="[ canNext ? 'bg-blue-500 hover:bg-blue-700' : 'bg-gray-400' ]" class="mx-1 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">&gt;</button>
         </div>
-        <div v-for="task in tasks" :key="task._id" class="bg-white rounded-lg shadow-md p-4">
-          <h3 class="text-lg font-bold">{{ task.titulo }}</h3>
-          <p>{{ task.titulo }}</p>
-          <div class="flex justify-between items-center mt-4">
-            <span class="text-gray-500">{{ formatDate(task.created_at) }}</span>
-            <button class="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg"
-              @click="onDelete(task._id)">Delete</button>
-          </div>
-        </div>
+        <TaskCard :task="task" v-for="task in tasks" :key="task._id" @onDelete="onDelete" />
       </div>
 
       <!-- no tasks -->
@@ -41,6 +33,7 @@ import { onMounted, reactive, computed, ref } from 'vue'
 import { Task } from '../types/models'
 import apiTasks from '../api/tasks'
 import CreateTaskForm from '../components/Tasks/Create.vue';
+import TaskCard from '../components/Tasks/Card.vue';
 
 const tasks = ref<Task[]>([])
 const errorMessage = ref('')
@@ -105,11 +98,6 @@ const fetchTasks = async () => {
   } catch (error: unknown) {
     errorMessage.value = error instanceof Error ? error.message : 'Unknown error'
   }
-}
-
-const formatDate = (dateString: Date) => {
-  const date = new Date(dateString)
-  return date.toLocaleString()
 }
 
 onMounted(fetchTasks)
