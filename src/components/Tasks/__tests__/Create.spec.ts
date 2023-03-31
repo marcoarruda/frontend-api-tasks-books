@@ -1,24 +1,16 @@
 import { mount } from '@vue/test-utils'
-import { describe, it, expect, vi, MockedFunction } from 'vitest'
-import { nextTick } from 'vue'
+import { describe, it, expect, vi } from 'vitest'
 import CreateTaskForm from '../Create.vue'
-import { createTask } from '../../../api/tasks'
+import apiTasks from '../../../api/tasks'
 import { Task } from '../../../types/models'
-
-vi.mock('../../../api/tasks', () => ({
-  createTask: vi.fn(),
-}))
+import { stubApiResponse, stubTask } from '../../../api/__tests__/stubs'
+import { TaskCreateForm } from '../../../types/forms'
 
 describe('CreateTaskForm', () => {
   it('emits task when create is successful', async () => {
-    const task: Task = {
-      _id: "random-id",
-      titulo: 'Test task',
-      completed_at: new Date(),
-      created_at: new Date(),
-      user_id: 'random-user-id',
-    };
-    (createTask as MockedFunction<typeof createTask>).mockResolvedValueOnce({ success: true, data: task, error: null })
+    const task = stubTask()
+    const response = stubApiResponse<Task, TaskCreateForm>(true, task, null)
+    vi.spyOn(apiTasks, 'createTask').mockResolvedValueOnce(response)
 
     const wrapper = mount(CreateTaskForm)
 
